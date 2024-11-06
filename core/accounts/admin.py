@@ -52,7 +52,7 @@ class CustomUserAdmin(UserAdmin):
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     model = Profile
-    list_display = ['user', 'first_name', 'last_name', 'description', 'created_date']
+    list_display = ['user', 'first_name', 'last_name', 'created_date']
     list_filter = ['user', 'created_date']
     searching_fields = ['user', 'last_name', 'first_name', 'description']
     ordering = ['user']
