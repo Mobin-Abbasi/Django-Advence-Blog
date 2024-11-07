@@ -6,6 +6,14 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Kir dahanet bere ishallah</h1>
+    <h1>Posts</h1>
+    <ol>
+        {% for post in posts %}
+            <li>
+                <a href="{% url 'blog:post-detail' pk=post.id %}"><h2>{{post.title}}</h2></a>
+                {{post.published_date}}
+            </li>
+        {%endfor%}
+    </ol>
 </body>
 </html>
