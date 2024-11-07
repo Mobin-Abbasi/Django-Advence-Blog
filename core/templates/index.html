@@ -11,7 +11,7 @@
         {% for post in posts %}
             <li>
                 <a href="{% url 'blog:post-detail' pk=post.id %}"><h2>{{post.title}}</h2></a>
-                {{post.published_date}}
+                {{post.author.first_name}} {{post.author.last_name}} - {{post.published_date}}
             </li>
         {%endfor%}
     </ol>

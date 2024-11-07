@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 
 # getting user model object
-User = get_user_model()
+# User = get_user_model()
 
 
 class Category(models.Model):
@@ -17,7 +17,7 @@ class Post(models.Model):
     """
     This is a class to define posts in a blog app.
     """
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey('accounts.Profile', on_delete=models.CASCADE)
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, related_name='subcategories', null=True)
     image = models.ImageField(null=True, blank=True)
     title = models.CharField(max_length=250)
