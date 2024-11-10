@@ -34,7 +34,7 @@ services:
     restart: always
     depends_on:
       - db
-  
+
   smtp4dev:
     image: rnwood/smtp4dev:v3
     restart: always
@@ -43,7 +43,7 @@ services:
       - '25:25'
       - '143:143'
     volumes:
-        - smtp4dev-data:/smtp4dev
+      - smtp4dev-data:/smtp4dev
     environment:
       - ServerOptions__HostName=smtp4dev
 
