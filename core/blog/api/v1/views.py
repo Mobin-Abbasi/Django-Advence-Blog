@@ -1,4 +1,9 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import (
+    IsAuthenticated,
+    IsAdminUser,
+    IsAuthenticatedOrReadOnly,
+)
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -8,6 +13,7 @@ from ...models import Post
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
 def post_list(request):
     if request.method == "GET":
         posts = Post.objects.filter(status=True)
@@ -21,6 +27,7 @@ def post_list(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def post_detail(request, id):
     post = get_object_or_404(Post, id=id)
     if request.method == "GET":

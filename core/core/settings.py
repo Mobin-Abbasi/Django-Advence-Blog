@@ -140,3 +140,13 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 
 # user manager config
 AUTH_USER_MODEL = "accounts.User"
+
+
+# restframework config
+
+REST_FRAMEWORK = {
+    # "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    # "DEFAULT_AUTHENTICATION_CLASSES": [
+    #     "rest_framework_simplejwt.authentication.JWTAuthentication",
+    # ],
+}
