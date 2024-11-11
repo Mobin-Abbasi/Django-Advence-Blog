@@ -6,6 +6,7 @@ from rest_framework.permissions import (
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 from django.shortcuts import get_object_or_404
 
@@ -50,7 +51,7 @@ def post_detail(request, id):
 """
 
 
-class PostList(APIView):
+'''class PostList(APIView):
     """getting a list of posts and creating new post"""
 
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -97,3 +98,21 @@ class PostDetail(APIView):
         return Response(
             {"message": "Post deleted successfully"}, status=status.HTTP_204_NO_CONTENT
         )
+        
+'''
+
+
+class PostList(ListCreateAPIView):
+    """getting a list of posts and creating new post"""
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = PostSerializer
+    queryset = Post.objects.filter(status=True)
+
+
+class PostDetail(RetrieveUpdateDestroyAPIView):
+    """retrieving, updating, or deleting a post"""
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = PostSerializer
+    queryset = Post.objects.filter(status=True)
