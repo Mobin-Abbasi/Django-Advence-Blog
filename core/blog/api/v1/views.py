@@ -11,8 +11,8 @@ from rest_framework import viewsets
 
 from django.shortcuts import get_object_or_404
 
-from .serializers import PostSerializer
-from ...models import Post
+from .serializers import PostSerializer, CategorySerializer
+from ...models import Post, Category
 
 
 # Example for FBV
@@ -125,9 +125,20 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
 '''
 
 
-class PostViewSet(viewsets.ModelViewSet):
+# Example for ViewSet in CBV
+
+
+class PostModelViewSet(viewsets.ModelViewSet):
     """get, post, put, delete operations on posts"""
 
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=True)
+
+
+class CategoryModelViewSet(viewsets.ModelViewSet):
+    """get, post, put, delete operations on categories"""
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
