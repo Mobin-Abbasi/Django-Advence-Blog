@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework import viewsets
 
 from django.shortcuts import get_object_or_404
 
@@ -14,6 +15,7 @@ from .serializers import PostSerializer
 from ...models import Post
 
 
+# Example for FBV
 """
 from rest_framework.decorators import api_view, permission_classes
 
@@ -51,7 +53,9 @@ def post_detail(request, id):
 """
 
 
-'''class PostList(APIView):
+# Example for APIView in CBV
+'''
+class PostList(APIView):
     """getting a list of posts and creating new post"""
 
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -102,6 +106,8 @@ class PostDetail(APIView):
 '''
 
 
+# Example for GenericAPIView in CBV
+'''
 class PostList(ListCreateAPIView):
     """getting a list of posts and creating new post"""
 
@@ -112,6 +118,15 @@ class PostList(ListCreateAPIView):
 
 class PostDetail(RetrieveUpdateDestroyAPIView):
     """retrieving, updating, or deleting a post"""
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = PostSerializer
+    queryset = Post.objects.filter(status=True)
+'''
+
+
+class PostViewSet(viewsets.ModelViewSet):
+    """get, post, put, delete operations on posts"""
 
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
