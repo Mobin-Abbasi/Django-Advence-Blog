@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 
 from .serializers import PostSerializer, CategorySerializer
 from ...models import Post, Category
+from .permissions import IsOwnerOrReadOnly
 
 
 # Example for FBV
@@ -131,7 +132,7 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
 class PostModelViewSet(viewsets.ModelViewSet):
     """get, post, put, delete operations on posts"""
 
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=True)
 
