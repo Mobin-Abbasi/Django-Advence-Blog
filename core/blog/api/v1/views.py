@@ -10,6 +10,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework import viewsets
 
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import PostSerializer, CategorySerializer
 from ...models import Post, Category
@@ -135,6 +136,8 @@ class PostModelViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=True)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["category", "author", "status"]
 
 
 class CategoryModelViewSet(viewsets.ModelViewSet):

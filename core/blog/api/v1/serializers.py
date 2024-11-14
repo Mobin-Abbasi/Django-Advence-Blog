@@ -20,6 +20,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "author",
+            "image",
             "title",
             "content",
             "snippet",
