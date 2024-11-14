@@ -16,6 +16,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .serializers import PostSerializer, CategorySerializer
 from ...models import Post, Category
 from .permissions import IsOwnerOrReadOnly
+from .paginations import DefaultPagination
 
 
 # Example for FBV
@@ -141,6 +142,7 @@ class PostModelViewSet(viewsets.ModelViewSet):
     filterset_fields = ["category", "author", "status"]
     search_fields = ["title", "content"]
     ordering_fields = ["created_date", "published_date"]
+    pagination_class = DefaultPagination
 
 
 class CategoryModelViewSet(viewsets.ModelViewSet):
