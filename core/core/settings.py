@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "blog.apps.BlogConfig",
     "rest_framework",
+    "rest_framework.authtoken",
     "django_filters",
     "drf_yasg",
 ]
