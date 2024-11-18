@@ -1,0 +1,10 @@
+from rest_framework import serializers
+from ...models import User
+
+
+class RegistrationSerializer(serializers.ModelSerializer):
+    """Serializer for registration"""
+
+    class Meta:
+        model = User
+        fields = ["email", "password"]
