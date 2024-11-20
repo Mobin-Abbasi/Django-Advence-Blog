@@ -1,4 +1,7 @@
+from typing import Dict
 from rest_framework import serializers
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions
@@ -66,3 +69,13 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
         attrs["user"] = user
         return attrs
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """Obtain authentication token"""
+
+    def validate(self, attrs):
+        validate_data = super().validate(attrs)
+        validate_data["email"] = self.user.email
+        validate_data["user_id"] = self.user.id
+        return validate_data
