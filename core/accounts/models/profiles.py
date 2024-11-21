@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .accounts import User
+from .users import User
 
 
 class Profile(models.Model):
