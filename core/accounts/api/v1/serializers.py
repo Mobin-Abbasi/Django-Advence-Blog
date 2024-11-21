@@ -8,7 +8,7 @@ from django.core import exceptions
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 
-from ...models import User
+from ...models import User, Profile
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -98,3 +98,13 @@ class ChangePasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError({"new_password": list(e.messages)})
 
         return super().validate(attrs)
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    """Serializer for Profile model"""
+
+    email = serializers.CharField(source="user.email", read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ["id", "email", "first_name", "last_name", "image", "description"]

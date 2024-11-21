@@ -12,13 +12,16 @@ from rest_framework_simplejwt.views import (
 )
 
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 
 from .serializers import (
     RegistrationSerializer,
     CustomAuthTokenSerializer,
     CustomTokenObtainPairSerializer,
     ChangePasswordSerializer,
+    ProfileSerializer,
 )
+from ...models import Profile
 
 
 # getting user model object
@@ -107,3 +110,15 @@ class ChangePasswordAPIView(generics.GenericAPIView):
                 status=status.HTTP_200_OK,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProfileAPIView(generics.RetrieveUpdateAPIView):
+    """Retrieve profile for authenticated user"""
+
+    serializer_class = ProfileSerializer
+    queryset = Profile.objects.all()
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
+        return obj

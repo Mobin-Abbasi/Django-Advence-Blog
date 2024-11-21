@@ -23,4 +23,5 @@ urlpatterns = [
         views.ChangePasswordAPIView.as_view(),
         name="change-password",
     ),
+    path("profile/", views.ProfileAPIView.as_view(), name="profile"),
 ]
