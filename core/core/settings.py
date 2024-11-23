@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "django_filters",
     "drf_yasg",
+    "mail_templated",
 ]
 
 MIDDLEWARE = [
@@ -133,6 +134,8 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
+# email configuration
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = config("EMAIL_HOST", default="smtp4dev")
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool, default=False)
@@ -146,7 +149,7 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 AUTH_USER_MODEL = "accounts.User"
 
 
-# restframework config
+# rest framework config
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [

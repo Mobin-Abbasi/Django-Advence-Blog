@@ -75,7 +75,7 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     """Obtain authentication token"""
-
+    
     def validate(self, attrs):
         validate_data = super().validate(attrs)
         if not self.user.is_verified:

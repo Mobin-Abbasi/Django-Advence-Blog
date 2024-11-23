@@ -14,6 +14,8 @@ from rest_framework_simplejwt.views import (
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 
+from mail_templated import EmailMessage
+
 from .serializers import (
     RegistrationSerializer,
     CustomAuthTokenSerializer,
@@ -22,6 +24,7 @@ from .serializers import (
     ProfileSerializer,
 )
 from ...models import Profile
+from ..utils import EmailThread
 
 
 # getting user model object
@@ -122,3 +125,15 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
         queryset = self.get_queryset()
         obj = get_object_or_404(queryset, user=self.request.user)
         return obj
+
+
+class TestEmailSend(generics.GenericAPIView):
+    def get(self, request):
+        email_obj = EmailMessage(
+            "email/hello.tpl",
+            {"name": "mobin"},
+            "admin@admin.com",
+            to=["user@example.com"],
+        )
+        EmailThread(email_obj).start()
+        return Response("sent mail")

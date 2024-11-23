@@ -20,4 +20,5 @@ urlpatterns = [
         views.ChangePasswordAPIView.as_view(),
         name="change-password",
     ),
+    path("test-email", views.TestEmailSend.as_view(), name="test-email"),
 ]
