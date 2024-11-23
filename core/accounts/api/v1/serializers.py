@@ -75,7 +75,7 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     """Obtain authentication token"""
-    
+
     def validate(self, attrs):
         validate_data = super().validate(attrs)
         if not self.user.is_verified:
@@ -112,3 +112,24 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ["id", "email", "first_name", "last_name", "image", "description"]
+
+
+class ActivateResendSerializer(serializers.Serializer):
+    """Serializer for resending activation email"""
+
+    email = serializers.EmailField(required=True)
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+
+        try:
+            user_obj = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"details": "user does not exist"})
+
+        if user_obj.is_verified:
+            raise serializers.ValidationError({"details": "user is already verified"})
+
+        attrs["user"] = user_obj
+
+        return super().validate(attrs)

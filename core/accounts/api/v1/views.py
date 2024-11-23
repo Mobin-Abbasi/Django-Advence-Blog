@@ -14,8 +14,11 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 
 from mail_templated import EmailMessage
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
+import jwt
 
 from .serializers import (
     RegistrationSerializer,
@@ -23,6 +26,7 @@ from .serializers import (
     CustomTokenObtainPairSerializer,
     ChangePasswordSerializer,
     ProfileSerializer,
+    ActivateResendSerializer,
 )
 from ...models import Profile
 from ..utils import EmailThread
@@ -43,9 +47,27 @@ class RegistrationAPIView(generics.GenericAPIView):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            data = {"email": serializer.validated_data["email"]}
+            email = serializer.validated_data["email"]
+            data = {"email": email}
+
+            user_obj = get_object_or_404(User, email=email)
+            token = self.get_tokens_for_user(user_obj)
+
+            email_obj = EmailMessage(
+                "email/activation_email.tpl",
+                {"token": token},
+                "admin@admin.com",
+                to=[email],
+            )
+            EmailThread(email_obj).start()
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_tokens_for_user(self, user):
+        """Generate tokens for a user"""
+
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
@@ -132,7 +154,7 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
 class TestEmailSend(generics.GenericAPIView):
     """Test email sending using template"""
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         """Send email using template"""
 
         self.email = "user@example.com"
@@ -147,6 +169,59 @@ class TestEmailSend(generics.GenericAPIView):
         )
         EmailThread(email_obj).start()
         return Response("sent mail")
+
+    def get_tokens_for_user(self, user):
+        """Generate tokens for a user"""
+
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
+
+
+class ActivationAPIView(APIView):
+    """Activate user account using token"""
+
+    def get(self, request, token, *args, **kwargs):
+        """Activate user account using token"""
+        try:
+            token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = token.get("user_id")
+        except ExpiredSignatureError:
+            return Response({"details": "token has been expired"})
+        except InvalidTokenError:
+            return Response({"details": "token is not valid"})
+
+        user_obj = User.objects.get(pk=user_id)
+
+        if user_obj.is_verified:
+            return Response({"details": "your account has already been verified"})
+
+        user_obj.is_verified = True
+        user_obj.save()
+
+        return Response({"details": "account has been successfully verified"})
+
+
+class ActivationResendApiView(generics.GenericAPIView):
+    """Resend activation email to user"""
+
+    serializer_class = ActivateResendSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = ActivateResendSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user_obj = serializer.validated_data["user"]
+        token = self.get_tokens_for_user(user_obj)
+        email_obj = EmailMessage(
+            "email/activation_email.tpl",
+            {"token": token},
+            "admin@admin.com",
+            to=[user_obj.email],
+        )
+        EmailThread(email_obj).start()
+        return Response(
+            {"details": "user activation resend successfully"},
+            status=status.HTTP_200_OK,
+        )
 
     def get_tokens_for_user(self, user):
         """Generate tokens for a user"""
