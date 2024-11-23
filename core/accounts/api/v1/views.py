@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
@@ -25,10 +26,11 @@ from .serializers import (
 )
 from ...models import Profile
 from ..utils import EmailThread
+from ...models import User
 
 
 # getting user model object
-User = get_user_model
+# User = get_user_model
 
 
 class RegistrationAPIView(generics.GenericAPIView):
@@ -128,12 +130,26 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
 
 
 class TestEmailSend(generics.GenericAPIView):
+    """Test email sending using template"""
+
     def get(self, request):
+        """Send email using template"""
+
+        self.email = "user@example.com"
+        user_obj = get_object_or_404(User, email=self.email)
+        token = self.get_tokens_for_user(user_obj)
+
         email_obj = EmailMessage(
             "email/hello.tpl",
-            {"name": "mobin"},
+            {"token": token},
             "admin@admin.com",
-            to=["user@example.com"],
+            to=[self.email],
         )
         EmailThread(email_obj).start()
         return Response("sent mail")
+
+    def get_tokens_for_user(self, user):
+        """Generate tokens for a user"""
+
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
