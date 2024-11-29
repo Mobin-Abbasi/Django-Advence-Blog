@@ -45,7 +45,8 @@ services:
       - redis
 
   celery:
-    build: .
+    build:
+      dockerfile: ./dockerfiles/dev/django/Dockerfile
     command: celery -A core worker --loglevel=info
     volumes:
       - ./core:/app
