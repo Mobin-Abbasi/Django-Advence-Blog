@@ -1,6 +1,12 @@
 version: '3.9'
 
 services:
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
   db:
     container_name: postgres
     image: postgres:15-alpine
