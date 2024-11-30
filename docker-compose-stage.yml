@@ -46,19 +46,10 @@ services:
       - db
       - redis
 
-  celery:
-    build:
-      dockerfile: ./dockerfiles/dev/django/Dockerfile
-    command: celery -A core worker --loglevel=info
-    volumes:
-      - ./core:/app
-    depends_on:
-      - redis
-      - backend
-
   nginx:
     image: nginx
     container_name: nginx
+    restart: always
     ports:
       - "80:80"
     volumes:
@@ -67,8 +58,6 @@ services:
       - media_volumes:/home/app/media
     depends_on:
       - backend
-      - redis
-    restart: always
 
 volumes:
   static_volumes:
