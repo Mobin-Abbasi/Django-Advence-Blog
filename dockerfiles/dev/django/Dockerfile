@@ -4,7 +4,7 @@ LABEL maintainer="mobin04dev@gmail.com"
 
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY requirements.txt .
 
