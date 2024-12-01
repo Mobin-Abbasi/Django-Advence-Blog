@@ -1,2 +1,2 @@
 # Django-Advence-Blog
- This woll be sample project
+This will be sample project | coding with python and django rest framework (DRF). Also, this project benefits from tools such as Docker, Celery, Redis and ...
